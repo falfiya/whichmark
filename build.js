@@ -10,7 +10,7 @@ zip.on("close", () => console.log("Done\n"));
 
 zip.pipe(xps);
 
-const include = ["manifest.json", "whichmark.js", "icons"];
+const include = ["manifest.json", "whichmark.js", "icon.png"];
 
 for (const dirent of include) {
    console.log(`ADD ${dirent}`);

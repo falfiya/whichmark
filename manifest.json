@@ -5,19 +5,23 @@
 
    "description": "Switchmark compatable bookmark switcher",
 
-   "applications": {
-      "gecko": {
-         "id": "whichmark@coalpha.github.io"
-      }
-   },
-
-   "icons": {
-      "48": "icons/48.png"
-   },
-
    "permissions": [
-      "bookmarks"
+      "bookmarks",
+      "storage"
    ],
 
-   "background": { "scripts": ["whichmark.js"] }
+   "icons": {
+      "128": "icon.png"
+   },
+
+   "background": { "scripts": ["whichmark.js"] },
+
+   "browser_action": {
+      "default_icon": {
+         "128": "icon.png"
+      },
+      "default_title": "Do something"
+   },
+
+   "applications": { "gecko": { "id": "whichmark@coalpha.github.io" } }
 }
