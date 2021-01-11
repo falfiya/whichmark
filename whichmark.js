@@ -4,12 +4,6 @@ const root_id    = "root________";
 const toolbar_id = "toolbar_____";
 const other_id   = "unfiled_____";
 
-const fst = a => a[0];
-
-function getSingleSubtree(id) {
-   return B.getSubTree(id).then(fst);
-}
-
 /**
  * @param subTree {browser.bookmarks.BookmarkTreeNode}
  * @param title {string}
@@ -55,8 +49,6 @@ async function getStorage() {
    return B.create(STORAGE_CREATION_DETAILS);
 }
 
-function ignore() {}
-
 async function moveFolderContents(fromId, toId) {
    const trees = await B.getSubTree(fromId);
    if (trees.length !== 1) {
@@ -70,11 +62,22 @@ async function moveFolderContents(fromId, toId) {
    }
 
    let len = children.length|0;
-   for (let i = 0; i < len; ++i) {
-      const child = children[i];
+   const moves = Array(len);
+   while (len --> 0) {
+      const child = children[len];
       const dest  = {parentId: toId, index: child.index};
-      await B.move(child.id, dest).then(ignore);
+      moves[len]  = B.move(child.id, dest);
    }
+   await Promise.all(moves);
+
+   len = children.length|0;
+   const order = Array(len);
+   while (len --> 0) {
+      const child = children[len];
+      const dest  = {index: child.index};
+      order[len]  = B.move(child.id, dest);
+   }
+   await Promise.all(order);
 }
 
 let currentlyActiveToolbar = 0;
