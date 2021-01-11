@@ -1,2 +1,5 @@
 /node_modules/
 /bin/
+/lib/
+/.bsb.lock
+/.merlin

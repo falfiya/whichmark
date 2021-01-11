@@ -1,14 +1,8 @@
-const B = browser.bookmarks;
+const b = chrome.bookmarks;
 
 const root_id    = "root________";
 const toolbar_id = "toolbar_____";
 const other_id   = "unfiled_____";
-
-const fst = a => a[0];
-
-function getSingleSubtree(id) {
-   return B.getSubTree(id).then(fst);
-}
 
 /**
  * @param subTree {browser.bookmarks.BookmarkTreeNode}
@@ -69,7 +63,7 @@ async function moveFolderContents(fromId, toId) {
       return void 0;
    }
 
-   let len = children.length|0;
+   const len = children.length|0;
    for (let i = 0; i < len; ++i) {
       const child = children[i];
       const dest  = {parentId: toId, index: child.index};
@@ -79,7 +73,14 @@ async function moveFolderContents(fromId, toId) {
 
 let currentlyActiveToolbar = 0;
 
-async function switchToolbars() {
+var currentlySwitching = false;
+
+function switchToolbars() {
+   if (currentlySwitching) {
+      return;
+   }
+   currentlySwitching = true;
+
    const toolbarCount = 2;
    const storage  = await getStorage();
    const toolbars = Array(toolbarCount);

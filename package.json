@@ -1,15 +1,17 @@
 {
    "name": "@coalpha/whichmark",
    "version": "0.0.1",
-
    "scripts": {
-      "start": "node build"
+      "build": "bsb -make-world",
+      "clean": "bsb -clean-world",
+      "start": "bsb -make-world -w",
+      "build:extension": "npm run build && node build"
    },
-
    "devDependencies": {
       "@coalpha/eslint-config": "^1.0.3",
       "@types/firefox-webext-browser": "^82.0.0",
       "archiver": "^5.2.0",
+      "bs-platform": "^8.4.2",
       "eslint": "^6.8.0"
    }
 }
