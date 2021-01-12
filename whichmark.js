@@ -4,12 +4,6 @@ const root_id    = "root________";
 const toolbar_id = "toolbar_____";
 const other_id   = "unfiled_____";
 
-const fst = a => a[0];
-
-function getSingleSubtree(id) {
-   return B.getSubTree(id).then(fst);
-}
-
 /**
  * @param subTree {browser.bookmarks.BookmarkTreeNode}
  * @param title {string}
