@@ -26,29 +26,44 @@ namespace Id {
       B.getChildren(parentId, children => {
          const presentChild = Children.getChildByTitle(children, title);
          if (presentChild) {
+            console.info(`${title} was present`);
             cb(presentChild);
             return;
          }
 
+         console.info(`${title} is being created`);
          B.create({title, parentId}, cb);
       })
 }
 
-namespace Bookmark {
-   export const getChildByTitle = (parent: Bookmark, title: string): Nullmark =>
-      parent.children
-      ? Children.getChildByTitle(parent.children, title)
-      : null
+const root_id    = "root________";
+const toolbar_id = "toolbar_____";
+const other_id   = "unfiled_____";
 
-   export const open = (parent: Bookmark, title: string, cb: Consumer<Bookmark>) => {
-      if (parent.children) {
-         const presentChild = Children.getChildByTitle(parent.children, title);
-         if (presentChild) {
-            cb(presentChild);
-            return;
-         }
-      }
-
-      B.create({title, parentId: parent.id}, cb);
+const numberOfToolbars = 10;
+const toolbars = Array(numberOfToolbars);
+console.info("starting");
+Id.open(other_id, "Switchmark", whichmark => {
+   var completed = 0;
+   for (let i = 0; i < numberOfToolbars; ++i) {
+      // very important that i is declared with let
+      setTimeout(() => {
+         Id.open(whichmark.id, i.toString(), toolbar => {
+            console.info(`opened ${i} at index ${toolbar.index}`);
+            toolbars[i] = toolbar;
+            if (++completed === numberOfToolbars) {
+               finalizeInit();
+            }
+         });
+      }, 2000 * i);
    }
+});
+
+function finalizeInit() {
+   console.info("finalizeInit()");
+   chrome.browserAction.onClicked.addListener(switchToolbars);
+}
+
+function switchToolbars() {
+   console.log(toolbars);
 }

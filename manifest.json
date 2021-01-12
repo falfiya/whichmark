@@ -20,7 +20,7 @@
       "default_icon": {
          "128": "icon.png"
       },
-      "default_title": "Do something"
+      "default_title": "Whichmark"
    },
 
    "applications": { "gecko": { "id": "whichmark@coalpha.github.io" } }
