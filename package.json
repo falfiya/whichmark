@@ -3,9 +3,10 @@
    "version": "0.0.1",
 
    "devDependencies": {
-      "@coalpha/eslint-config": "^1.0.3",
-      "@types/firefox-webext-browser": "^82.0.0",
+      "@types/chrome": "^0.0.128",
       "archiver": "^5.2.0",
-      "eslint": "^6.8.0"
+      "eslint": "^6.8.0",
+      "terser": "^5.5.1",
+      "typescript": "^4.1.3"
    }
 }

@@ -14,13 +14,13 @@
       "128": "icon.png"
    },
 
-   "background": { "scripts": ["whichmark.js"] },
+   "background": { "scripts": ["bin/whichmark.js"] },
 
    "browser_action": {
       "default_icon": {
          "128": "icon.png"
       },
-      "default_title": "Do something"
+      "default_title": "Whichmark"
    },
 
    "applications": { "gecko": { "id": "whichmark@coalpha.github.io" } }
