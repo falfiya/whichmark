@@ -1,13 +1,14 @@
 {
    "manifest_version": 2,
    "name": "Whichmark",
-   "version": "0.0.1",
+   "version": "0.1.0",
 
    "description": "Switchmark compatable bookmark switcher",
 
    "permissions": [
       "bookmarks",
-      "storage"
+      "storage",
+      "contextMenus"
    ],
 
    "icons": {
@@ -15,6 +16,11 @@
    },
 
    "background": { "scripts": ["bin/whichmark.js"] },
+   "options_ui": {
+      "page": "options/index.html",
+      "browser_style": false,
+      "open_in_tab": true
+   },
 
    "browser_action": {
       "default_icon": {

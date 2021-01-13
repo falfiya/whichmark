@@ -38,16 +38,36 @@ const root_id    = "root________";
 const toolbar_id = "toolbar_____";
 const other_id   = "unfiled_____";
 
-const numberOfToolbars = 2;
-const benchedToolbarIds: string[] = Array(numberOfToolbars);
+var toolbarCount = -1;
+var benchedToolbarIds: string[];
 
-openFolder(other_id, "Switchmark", registerToolbars);
+chrome.storage.sync.get("toolbarCount", init_ReadToolbarCount);
 
-function registerToolbars(whichmark: Bookmark) {
+const max_toolbars = 8;
+function init_ReadToolbarCount(obj: any) {
+   if (obj.toolbarCount) {
+      toolbarCount = Number(obj.toolbarCount);
+      if (toolbarCount < max_toolbars) {
+         init_OpenSwitchmarksFolder();
+         return;
+      }
+   }
+   toolbarCount = 2;
+   chrome.storage.sync.set({toolbarCount}, init_OpenSwitchmarksFolder);
+}
+
+function init_OpenSwitchmarksFolder() {
+   console.info("init_OpenSwitchmarksFolder");
+
+   benchedToolbarIds = Array(toolbarCount);
+   openFolder(other_id, "Switchmark", init_RegisterToolbars);
+}
+
+function init_RegisterToolbars(whichmark: Bookmark) {
    openToolbar(0);
    function openToolbar(i: number) {
-      if (i === numberOfToolbars) {
-         registerActiveToolbarIndex();
+      if (i === toolbarCount) {
+         init_RegisterActiveToolbarIndex();
          return;
       }
 
@@ -60,14 +80,14 @@ function registerToolbars(whichmark: Bookmark) {
 
 var activeToolbarIndex = -1;
 
-function registerActiveToolbarIndex() {
+function init_RegisterActiveToolbarIndex() {
    chrome.storage.sync.get("activeToolbarIndex", obj => {
       activeToolbarIndex = obj.activeToolbarIndex|0
-      finalizeInit();
+      init_Finalize();
    });
 }
 
-function finalizeInit() {
+function init_Finalize() {
    chrome.browserAction.setBadgeBackgroundColor({color: "mediumpurple"});
    chrome.browserAction.setBadgeText({text: activeToolbarIndex.toString()});
    chrome.browserAction.onClicked.addListener(switch_Empty);
@@ -86,7 +106,7 @@ function switch_Empty() {
 
 function switch_Fill() {
    activeToolbarIndex += 1;
-   activeToolbarIndex %= numberOfToolbars;
+   activeToolbarIndex %= toolbarCount;
    moveFolderContents(benchedToolbarIds[activeToolbarIndex], toolbar_id, switch_UpdateBadge);
 }
 
@@ -122,3 +142,9 @@ function moveFolderContents(fromId: string, toId: string, cb: Runnable) {
       }
    });
 }
+
+chrome.contextMenus.create({
+   title: "Options",
+   contexts: ["browser_action"],
+   onclick: () => chrome.runtime.openOptionsPage(),
+});
