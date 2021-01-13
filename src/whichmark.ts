@@ -101,27 +101,55 @@ function moveFolderContents(fromId: string, toId: string, cb: Runnable) {
    B.getChildren(fromId, children => {
       const len = children.length;
 
+      if (len === 0) {
+         cb();
+      } else {
+         move();
+      }
+
       function move() {
          var moved = 0;
          for (let i = 0; i < len; ++i) {
-            chrome.bookmarks.move(children[i].id, {parentId: toId}, () =>
-               ++moved === len
-               && reorder()
-            );
+            const child = children[i];
+            console.groupCollapsed(`SET MOVE CHILD ${i}`);
+            console.info(child);
+            console.groupEnd();
+            chrome.bookmarks.move(child.id, {parentId: toId}, newChild => {
+               moved += 1;
+               console.group(`MOVE CHILD ${i} [${moved}/${len}]`);
+               console.info("FROM", child);
+               console.info("TO", newChild);
+               console.groupEnd();
+               if (moved === len) {
+                  reorder();
+               }
+            });
          }
       }
 
       function reorder() {
          var reordered = 0;
          for (let i = 0; i < len; ++i) {
-            const {id, index} = children[i];
-            chrome.bookmarks.move(id, {index}, () =>
-               ++reordered === len
-               && cb()
-            );
+            const child = children[i];
+            let index = child.index as any|0;
+            if (index < 0) {
+               console.info("WAS < 0");
+               index = 0;
+            }
+            console.groupCollapsed(`SET RRDR CHILD ${i} to ${index}`);
+            console.info(child);
+            console.groupEnd();
+            chrome.bookmarks.move(child.id, {index}, newChild => {
+               reordered += 1;
+               console.group(`RRDR CHILD ${i} to ${index} [${reordered}/${len}]`);
+               console.info("FROM", child);
+               console.info("TO", newChild);
+               console.groupEnd();
+               if (reordered === len) {
+                  cb();
+               }
+            });
          }
       }
-
-      move();
    });
 }
