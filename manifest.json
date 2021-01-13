@@ -2,8 +2,7 @@
    "manifest_version": 2,
    "name": "Whichmark",
    "version": "0.1.0",
-
-   "description": "Switchmark compatable bookmark switcher",
+   "description": "Switchmark compatable bookmark switcher for Firefox",
 
    "permissions": [
       "bookmarks",
@@ -15,7 +14,10 @@
       "128": "icon.png"
    },
 
-   "background": { "scripts": ["bin/whichmark.js"] },
+   "background": {
+      "scripts": ["bin/whichmark.js"]
+   },
+
    "options_ui": {
       "page": "options/index.html",
       "browser_style": false,
@@ -27,6 +29,14 @@
          "128": "icon.png"
       },
       "default_title": "Whichmark"
+   },
+
+   "commands": {
+      "_execute_browser_action": {
+         "suggested_key": {
+           "default": "Ctrl+Shift+S"
+         }
+      }
    },
 
    "applications": { "gecko": { "id": "whichmark@coalpha.github.io" } }

@@ -2,8 +2,10 @@ build:
 	npx tsc
 	node build
 
-release: build
-	npx terser --compress --mangle -- bin/whichmark.js
+release: bin/whichmark.js
+	npx tsc
+	node build
+	npx terser --compress --mangle -o $< -- $<
 
 watch:
 	npx tsc -w
