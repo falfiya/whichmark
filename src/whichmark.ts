@@ -1,4 +1,6 @@
-import B = chrome.bookmarks;
+import C = chrome;
+import B = C.bookmarks;
+import S = C.storage.sync;
 
 type Bookmark = B.BookmarkTreeNode;
 type Nullmark = Bookmark | null;
@@ -6,31 +8,33 @@ type Nullmark = Bookmark | null;
 type Consumer<T> = (res: T) => void;
 type Runnable    = ()       => void;
 
-function childrenGetChildByTitle(children: Bookmark[], title: string): Nullmark {
+function childrenGetChildrenByTitle(children: Bookmark[], title: string) {
    const len = children.length;
+   const matches = [];
    for (var i = 0; i < len; ++i) {
       const child = children[i];
       if (child.title === title) {
-         return child;
+         matches.push(child);
       }
    }
-   return null;
-}
 
-function getChildByTitle(parentId: string, title: string, cb: Consumer<Nullmark>) {
-   B.getChildren(parentId, children =>
-      cb(childrenGetChildByTitle(children, title)));
+   return matches;
 }
 
 function openFolder(parentId: string, title: string, cb: Consumer<Bookmark>) {
    B.getChildren(parentId, children => {
-      const presentChild = childrenGetChildByTitle(children, title);
-      if (presentChild) {
-         cb(presentChild);
-         return;
-      }
+      const parents = childrenGetChildrenByTitle(children, title);
 
-      B.create({title, parentId}, cb);
+      switch (parents.length) {
+         case 0:
+            B.create({title, parentId}, cb);
+            break;
+         case 1:
+            cb(parents[0]);
+            break;
+         default:
+            throw new Error(`There were two folders named ${title} within ${parentId}!`);
+      }
    });
 }
 
@@ -41,19 +45,19 @@ const other_id   = "unfiled_____";
 var toolbarCount = -1;
 var benchedToolbarIds: string[];
 
-chrome.storage.sync.get("toolbarCount", init_ReadToolbarCount);
+S.get("toolbarCount", init_ReadToolbarCount);
 
 const max_toolbars = 8;
 function init_ReadToolbarCount(obj: any) {
    if (obj.toolbarCount) {
-      toolbarCount = Number(obj.toolbarCount);
+      toolbarCount = obj.toolbarCount|0;
       if (toolbarCount < max_toolbars) {
          init_OpenSwitchmarksFolder();
          return;
       }
    }
    toolbarCount = 2;
-   chrome.storage.sync.set({toolbarCount}, init_OpenSwitchmarksFolder);
+   S.set({toolbarCount}, init_OpenSwitchmarksFolder);
 }
 
 function init_OpenSwitchmarksFolder() {
@@ -81,8 +85,8 @@ function init_RegisterToolbars(whichmark: Bookmark) {
 var activeToolbarIndex = -1;
 
 function init_RegisterActiveToolbarIndex() {
-   chrome.storage.sync.get("activeToolbarIndex", obj => {
-      activeToolbarIndex = obj.activeToolbarIndex|0
+   S.get("activeToolbarIndex", obj => {
+      activeToolbarIndex = Number(obj.activeToolbarIndex);
       init_Finalize();
    });
 }
@@ -115,7 +119,7 @@ function switch_UpdateBadge() {
 }
 
 function switch_UpdateStorage() {
-   chrome.storage.sync.set({activeToolbarIndex}, switch_Finish);
+   S.set({activeToolbarIndex}, switch_Finish);
 }
 
 function switch_Finish() {
@@ -124,7 +128,7 @@ function switch_Finish() {
 
 function moveFolderContents(fromId: string, toId: string, cb: Runnable) {
    B.getChildren(fromId, children => {
-      const len = children.length;
+      const len = children.length|0;
 
       if (len === 0) {
          cb();
@@ -133,12 +137,13 @@ function moveFolderContents(fromId: string, toId: string, cb: Runnable) {
       }
 
       function moveChild(i: number) {
+         i = i|0;
          if (i === len) {
             cb();
             return;
          }
-         const child = children[i];
-         chrome.bookmarks.move(child.id, {parentId: toId}, () => moveChild(i + 1));
+         const child = children[i|0];
+         chrome.bookmarks.move(child.id, {parentId: toId}, () => moveChild((i|0) + 1));
       }
    });
 }

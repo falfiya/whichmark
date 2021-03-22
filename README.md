@@ -13,15 +13,45 @@
 - Set `xpinstall.signatures.required` to `false`
 - Open `whichmark.xpi` with Firefox
 
+
+## Disclaimer
+
+With something that messes with your bookmarks like this, you probably want to
+back them up at least once. Firefox seems to routinely perform backups but you
+just want to be safe. If somehow this extension nukes all your bookmarks, blame
+Firefox, actually. Not me.
+
+## Defined Behavior
+
+Don't do these things but here's what's gonna happen if you do:
+
+### Moving `Switchmarks` and/or folders inside
+
+Continues to function as normal until restart.
+
+### Deleting `Switchmarks` and/or folders inside
+
+The next switch will stall forever until restart.
+
+### Moving bookmarks around while switching
+
+Out of order bookmarks.
+
+### Having multiple `Switchmarks` folder
+
+The extension will refuse to activate.
+
 ## Undefined Behavior
 
-**This extension is not ACID compliant yet!!**
+### Deleting a bookmark that is currently being moved
 
-- Moving `root________/unfiled_____/Switchmarks`
-- Deleting `root________/unfiled_____/Switchmarks`
-- Moving folders in `root________/unfiled_____/Switchmarks/`
-- Deleting folders in `root________/unfiled_____/Switchmarks/`
-- Deleting a bookmark that is currently being moved
-- Syncing while switching
-- Having multiple `root________/unfiled_____/Switchmarks`
-- Having colliding names in `root________/unfiled_____/Switchmarks/`
+Probably a stall and then half switched bookmarks.
+
+### Shutting down Firefox before the switch is complete
+
+Probably half switched bookmarks.
+
+### Syncing while switching
+
+Potential duplicate bookmarks. Probably won't delete anything, though.
+Currently, I have had this issue only once.

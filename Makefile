@@ -10,4 +10,9 @@ release: bin/whichmark.js
 watch:
 	npx tsc -w
 
+firefox := "C:\Program Files\Firefox Developer Edition\firefox.exe"
+
+install: build
+	$(firefox) bin/whichmark.xpi
+
 .PHONY: build watch release
