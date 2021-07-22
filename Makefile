@@ -1,10 +1,14 @@
-build:
+release: bin/whichmark.xpi
+	-
+
+build: bin/whichmark.js
+	-
+
+bin/whichmark.js:
 	npx tsc
 	node build
 
-release: bin/whichmark.js
-	npx tsc
-	node build
+bin/whichmark.xpi: bin/whichmark.js
 	npx terser --compress --mangle -o $< -- $<
 
 watch:

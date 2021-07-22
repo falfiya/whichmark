@@ -86,7 +86,10 @@ var activeToolbarIndex = -1;
 
 function init_RegisterActiveToolbarIndex() {
    S.get("activeToolbarIndex", obj => {
-      activeToolbarIndex = Number(obj.activeToolbarIndex);
+      activeToolbarIndex = obj.activeToolbarIndex|0;
+      if (activeToolbarIndex < 0 || activeToolbarIndex > (toolbarCount - 1)) {
+         activeToolbarIndex = 0;
+      }
       init_Finalize();
    });
 }
