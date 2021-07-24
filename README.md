@@ -13,14 +13,6 @@
 - Set `xpinstall.signatures.required` to `false`
 - Open `whichmark.xpi` with Firefox
 
-
-## Disclaimer
-
-With something that messes with your bookmarks like this, you probably want to
-back them up at least once. Firefox seems to routinely perform backups but you
-just want to be safe. If somehow this extension nukes all your bookmarks, blame
-Firefox, actually. Not me.
-
 ## Defined Behavior
 
 Don't do these things but here's what's gonna happen if you do:
