@@ -1,3 +1,5 @@
+
+
 release: bin/whichmark.xpi
 	-
 
